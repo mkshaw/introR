@@ -19,3 +19,14 @@ These materials are intended for an audience completely new to coding. They take
 * Graphing with `ggplot2`
 * Basic statistical analyses: t-test, linear regression
 * Troubleshooting advice
+
+## Setting Up R
+Before using these materials, you should download both R and RStudio. Briefly, R is the programming language itself and RStudio is software that makes it easier to code in R and organize your files.
+
+Download R first, then RStudio.
+
+Links for downloading R:
+* For Mac users: https://cran.r-project.org/bin/macosx/ 
+* For Windows users: https://cran.r-project.org/bin/windows/
+
+Link for downloading RStudio: https://posit.co/download/rstudio-desktop/
