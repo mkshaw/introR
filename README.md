@@ -1,6 +1,6 @@
 # Introduction to R
 
-These materials are intended for an audience completely new to coding. They take users from setting up a project in R to data manipulation with `dplyr` and graphing with `ggplot2`. I opted for .R files instead of .Rmd based on the philosophy that seeing pure code is easier to process than code + markdown formatting at the same time. The full contents are as follows:
+These materials are intended for an audience new to coding. They take users from setting up a project in R to data manipulation with `dplyr` and graphing with `ggplot2`. I opted for .R files instead of .Rmd based on the philosophy that seeing pure code is easier to process than code + markdown formatting at the same time. The full contents are as follows:
 
 ## Part 1
 * Why should we code?
@@ -30,3 +30,12 @@ Links for downloading R:
 * For Windows users: https://cran.r-project.org/bin/windows/
 
 Link for downloading RStudio: https://posit.co/download/rstudio-desktop/
+
+## Additional Resources
+
+This is not an exhaustive list of additional resources, but provides some immediately useful materials following the content of the two introductory sessions.
+
+* Coding style conventions: http://adv-r.had.co.nz/Style.html
+* A lot more about using R: https://r4ds.hadley.nz/
+* Advanced graphing: https://www.yan-holtz.com/PDF/Ggplot2_advancedTP_correction.html
+* Graph gallery (good for inspiration or examples of new graphs): https://r-graph-gallery.com/ 
