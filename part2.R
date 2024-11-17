@@ -159,7 +159,7 @@ mtcars |>
 
 # Let's do some common statistical analyses using a second dataset, starwars,
 # which is included with dplyr and has information about 14 Star Wars characters
-# like their height, mass, sex, species, etc. I saved it as a csv so we can
+# like their height, mass, gender, species, etc. I saved it as a csv so we can
 # practice loading files from outside of R.
 
 # Option 1: relative filepath. RECOMMENDED.
@@ -184,18 +184,13 @@ head(starwars)
 
 unique(starwars$species) # we need to add a variable for human/non-human
 
-starwars_t <- starwars |> 
+starwars <- starwars |> 
   mutate(human = ifelse(species == "Human", "human", "nonhuman"))
 
 # In general, R formulas are "Y ~ X", which you can read as something like "Y
 # predicted by X". So here, "mass 'predicted by' human status," which is to say
 # "how does mass differ between the human and non-human species?"
-t.test(mass ~ human, data = starwars_t)
-
-# Some assumption checks
-# normality
-hist(humans$mass)
-hist(others$mass)
+t.test(mass ~ human, data = starwars)
 
 # Linear regression
 # you can use lm, also in the base stats package
@@ -212,6 +207,12 @@ summary(model2)
 # We can add other predictors for multiple linear regression
 model3 <- lm(mass ~ height + gender, data = starwars)
 summary(model3)
+
+# # We won't discuss assumptions, but you can check with this package
+# (https://easystats.github.io/performance/articles/check_model.html) or with
+# the graphing discussed below.
+# diagnostics <- plot(performance::check_model(model3, panel = F))
+# diagnostics 
 
 # Logistic Regression (plus data manipulation) ----------------------------
 
@@ -294,16 +295,16 @@ ggplot(starwars) + # this says "I'm making a plot", like getting out a piece of 
 # learning. The main things we're going to touch on are a few basic shapes and
 # colours.
 
-# Graph of height by sex.
-ggplot(starwars, mapping = aes(x = sex, y = height)) +
+# Graph of height by gender.
+ggplot(starwars, mapping = aes(x = gender, y = height)) +
   geom_col()
 
 # Some geoms distinguish between colour (the outside edge) and fill (the inside)
 
-ggplot(starwars, mapping = aes(x = sex, colour = sex)) +
+ggplot(starwars, mapping = aes(x = gender, colour = gender)) +
   geom_bar()
 
-ggplot(starwars, mapping = aes(x = sex, fill = sex)) +
+ggplot(starwars, mapping = aes(x = gender, fill = gender)) +
   geom_bar()
 
 # some don't distinguish
@@ -319,7 +320,7 @@ starwars |>
   geom_point(mapping = aes(x = height, y = mass, colour = gender))
 
 starwars |>
-  filter(!is.na(height)) |>
+  filter(!is.na(gender)) |>
   ggplot() +
   geom_point(mapping = aes(x = height, y = mass, colour = gender))
 
