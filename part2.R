@@ -3,8 +3,8 @@
 # Installing and loading packages
 # Loading datasets
 # Data Manipulation with dplyr
+# Statistical analyses: t-test, linear and logistic regression
 # Graphing with ggplot2
-# Statistical analyses: t-test, linear regression
 # Troubleshooting
 
 # Installing and Loading Packages -----------------------------------------
@@ -19,16 +19,14 @@
 # package, (2) attach the package to your R session (what we have open right now
 # is an R session).
 
-# You only need to install the package once (or when it gets updates), but you
+# You only need to install the package once (or when it is updated), but you
 # need to attach it to every session you want to use it in. It's like any other
 # software: you need to download Google Chrome once to have it on your computer
 # (and sometimes you need to redownload to update it), but every time you want
 # to use it you have to open it.
 
-# Let's start with a package we'll be using next week which is for graphing.
-# It's called ggplot2, which is short for "grammar of graphics 2".
-# Don't worry about the details of the graphing right now, we'll look into that
-# next week.
+# Note that I usually put ALL packages I'll be using at the very top of the
+# document, along with the data I'll be using.
 
 # to install, need to do this once
 install.packages("dplyr") # you need the quotation marks
@@ -116,21 +114,21 @@ ungroup(mutate(group_by(mtcars, cyl), hp_average = mean(hp)))
 # the "pipe" operator comes in. In older versions of R, it looks like this %>%
 # and you have to attach the packages dplyr or magrittr to your session to use
 # it. In R 4.1 and newer, there is a pipe built into base R, which looks like
-# |>. The pipe makes it easier to read your code, because it takes the result of
+## |>. The pipe makes it easier to read your code, because it takes the result of
 # what you just ran, and passes it on to the next thing you're going to run. Our
 # same operation looks like this using the pipe:
 
-mtcars %>%                           # take the dataset and pass it forward
-  group_by(cyl) %>%                  # group the dataset by cyl and pass it forward
-  mutate(hp_average = mean(hp)) %>%  # calculate the mean horsepower
+mtcars |>                           # take the dataset and pass it forward
+  group_by(cyl) |>                  # group the dataset by cyl and pass it forward
+  mutate(hp_average = mean(hp)) |>  # calculate the mean horsepower
   ungroup()                          # ungroup the dataset and print the result
 
 # again, if you want to save the result of your calculation, you need to save it
 # to a variable
 
-mtcars_hp <- mtcars %>%
-  group_by(cyl) %>%
-  mutate(hp_average = mean(hp)) %>%
+mtcars_hp <- mtcars |>
+  group_by(cyl) |>
+  mutate(hp_average = mean(hp)) |>
   ungroup()
 
 # Arrange
@@ -139,46 +137,30 @@ mtcars_hp <- mtcars %>%
 # horsepower cars first:
 
 arrange(mtcars, hp)
-mtcars %>% arrange(hp) # with the pipe
+mtcars |> arrange(hp) # with the pipe
 
 # highest horsepower, use desc() for descending
 arrange(mtcars, desc(hp))
-mtcars %>% arrange(desc(hp))
+mtcars |> arrange(desc(hp))
 
 # Summarize/Summarise (either spelling works)
 # Summarize creates a new data frame summarizing some data. If the data are
 # ungrouped, it returns one row. If the data are grouped, it returns one row per
 # group. See some functions in the documentation: ?summarize.
 
-mtcars %>%
+mtcars |>
   summarize(mean = mean(hp),
             n = n())
 
 # There are a bunch of other functions, as well, like renaming columns, removing
 # them, doing rowwise operations, etc. https://dplyr.tidyverse.org/
 
-# Graphing with ggplot2 ---------------------------------------------------
+# Statistical Analyses ----------------------------------------------------
 
-install.packages("ggplot2") # you have to do this once
-library(ggplot2) # have to attach to session every time
-
-# Note that I usually put ALL packages I'll be using at the very top of the
-# document, along with the data I'll be using.
-
-# ggplot stands for "grammar of graphics" plotting, which is the idea that just
-# like languages have grammars and once you know that you can construct totally
-# new sentences, graphs also have a "grammar," fundamental elements that you can
-# use to build all kinds of graphs.
-
-# The main ingredients in a graph are (1) the plotting region (this would be
-# like a piece of paper, in the physical world) and (2) the shapes you're using
-# in your graph (this is your type of graph) In ggplot2, the shapes are
-# generally called "geom"s, and some examples of geoms are histograms,
-# scatterplots, bar graphs, line graphs, boxplots, violin plots. Let's
-# investigate some graphing with a second dataset, starwars, which is included
-# with dplyr and has information about 14 Star Wars characters like their
-# height, mass, sex, species, etc. I saved it as a csv so we can practice
-# loading files from outside of R.
+# Let's do some common statistical analyses using a second dataset, starwars,
+# which is included with dplyr and has information about 14 Star Wars characters
+# like their height, mass, sex, species, etc. I saved it as a csv so we can
+# practice loading files from outside of R.
 
 # Option 1: relative filepath. RECOMMENDED.
 starwars <- read.csv("starwars.csv")
@@ -190,6 +172,115 @@ starwars <- read.csv("starwars.csv")
 
 # first few rows
 head(starwars)
+
+# We'll focus on a few analyses that you might encounter or that you've seen
+# before: t-tests, ANOVAs, linear and logistic regression. Then we'll look at
+# displaying results nicely with sjPlot and graphing your regressions with
+# marginaleffects.
+
+# t-test
+# Let's use a t-test to assess whether humans' weights are significantly
+# different from other species.
+
+unique(starwars$species) # we need to add a variable for human/non-human
+
+starwars_t <- starwars |> 
+  mutate(human = ifelse(species == "Human", "human", "nonhuman"))
+
+# In general, R formulas are "Y ~ X", which you can read as something like "Y
+# predicted by X". So here, "mass 'predicted by' human status," which is to say
+# "how does mass differ between the human and non-human species?"
+t.test(mass ~ human, data = starwars_t)
+
+# Some assumption checks
+# normality
+hist(humans$mass)
+hist(others$mass)
+
+# Linear regression
+# you can use lm, also in the base stats package
+# How are height and mass related?
+model <- lm(mass ~ height, data = starwars)
+summary(model)
+
+# a linear regression with a categorical predictor is an anova
+# for example, effect of gender on height
+# in these data, gender = female or male
+model2 <- lm(mass ~ gender, data = starwars)
+summary(model2)
+
+# We can add other predictors for multiple linear regression
+model3 <- lm(mass ~ height + gender, data = starwars)
+summary(model3)
+
+# Logistic Regression (plus data manipulation) ----------------------------
+
+# let's read in some data about chess games These data are a subset of games
+# from 2017, from the lichess database: https://database.lichess.org/
+chess <- read.csv("chess.csv")
+
+str(chess)
+
+# Result: the result of the game from the white pieces' perspective
+# WhiteElo: the rating of the person playing the white pieces
+# BlackElo: the rating of the person playing the black pieces
+
+# let's look at how rating difference affects winning
+# first, we want a binary outcome, let's create a variable called "WhiteWins".
+# If white wins, it equals 1, otherwise 0. (I removed draws from these data.)
+# Then, we want to create one variable to represent the rating differences
+# between players. Let's make it WhiteElo - BlackElo, so positive numbers mean
+# the person playing white is stronger and vice versa. (We could have chosen the
+# opposite direction, too, this is just easier in my mind for conceptualizing
+# the results.)
+
+chess <- chess |> 
+  mutate(WhiteWins = ifelse(Result == "1-0", 1, 0),
+         RatingDiff = WhiteElo - BlackElo)
+  
+# you can use glm, in the base stats package
+model4 <- glm(WhiteWins ~ RatingDiff,
+              family = binomial,
+              data = chess)
+summary(model4) # summary returns the log odds, we can calculate odds ratios
+exp(coef(model4)) # this returns e^beta
+
+# Presenting Results: sjPlot and ggplot2 ----------------------------------
+
+install.packages(c("sjPlot", "ggplot2")) # you have to do this once
+library(sjPlot) # have to attach to session every time
+library(ggplot2) 
+
+# You can print your model results in nice tables and visualize your regression
+# coefficients using the sjPlot package. In particular, the function tab_model()
+# prints a table ("tab") for your model, and plot_model() generates a plot.
+
+# For our simple linear regression, model
+tab_model(model)
+plot_model(model)
+
+# For our simple linear regression, categorical predictor, model2
+tab_model(model2)
+plot_model(model2)
+
+# For our multiple linear regression, model3
+tab_model(model3)
+plot_model(model3)
+
+# For our logistic regression
+tab_model(model4) # converts to odds ratios for you
+plot_model(model4)
+
+# ggplot stands for "grammar of graphics" plotting, which is the idea that just
+# like languages have grammars and once you know that you can construct totally
+# new sentences, graphs also have a "grammar," fundamental elements that you can
+# use to build all kinds of graphs.
+
+# The main ingredients in a graph are (1) the plotting region (this would be
+# like a piece of paper, in the physical world) and (2) the shapes you're using
+# in your graph (this is your type of graph) In ggplot2, the shapes are
+# generally called "geom"s, and some examples of geoms are histograms,
+# scatterplots, bar graphs, line graphs, boxplots, violin plots. 
 
 ggplot(starwars) + # this says "I'm making a plot", like getting out a piece of paper
   geom_point(mapping = aes(x = height, y = mass)) # this is the "point" geom, for a scatterplot. mapping = aes(...) describes what's on your axes
@@ -221,56 +312,19 @@ ggplot(starwars) +
 
 # you can also do data manipulation and then pipe into a graph. NOTE THE
 # DIFFERENCE: ggplot uses plus signs (+) to join things together, not pipes
-# (%>%).
+# (%>% or |>).
 
-starwars %>%
+starwars |>  
   ggplot() +
   geom_point(mapping = aes(x = height, y = mass, colour = gender))
 
-starwars %>%
-  filter(!is.na(height)) %>%
+starwars |>
+  filter(!is.na(height)) |>
   ggplot() +
   geom_point(mapping = aes(x = height, y = mass, colour = gender))
 
-# Statistical Analyses ----------------------------------------------------
+# Troubleshooting ---------------------------------------------------------
 
-# t-test
-# Let's use a t-test to assess whether humans' weights are significantly
-# different from other species. First, we need to create new datasets for humans
-# and others.
-
-humans <- starwars %>%
-  filter(species == "Human") %>%
-  select(name, mass, species)
-
-others <- starwars %>%
-  filter(species != "Human") %>%
-  select(name, mass, species)
-
-# Then we can compare weights using the t.test function included in base R via
-# the stats package.
-t.test(humans$mass, others$mass)
-
-# Some assumption checks
-# normality
-hist(humans$mass)
-hist(others$mass)
-
-# Linear regression
-# you can use lm, also in the base stats package
-# How are height and mass related?
-model <- lm(mass ~ height, data = starwars)
-summary(model)
-
-# a linear regression with categories is an anova
-# for example, effect of gender on height
-model2 <- lm(height ~ gender, data = starwars)
-summary(model2)
-
-# the default is feminine, which is the intercept. the difference between the
-# two is marked by gendermasculine, and the effect is not significant.
-
-# Troubleshooting
 # You WILL run into problems/errors/bugs while coding. It's all part of the
 # process, and you get better at coding by running into problems and then
 # solving them. It sounds basic, but truly a huge part of troubleshooting and

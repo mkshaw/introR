@@ -16,8 +16,8 @@ These materials are intended for an audience new to coding. They take users from
 * Installing and attaching packages
 * Loading datasets
 * Data manipulation with `dplyr`
+* Statistical analyses: t-tests, linear and logistic regression
 * Graphing with `ggplot2`
-* Basic statistical analyses: t-test, linear regression
 * Troubleshooting advice
 
 ## Setting Up R
