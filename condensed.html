@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Mairead Shaw">
+
+<title>Introduction to R</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="condensed_files/libs/clipboard/clipboard.min.js"></script>
+<script src="condensed_files/libs/quarto-html/quarto.js"></script>
+<script src="condensed_files/libs/quarto-html/popper.min.js"></script>
+<script src="condensed_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="condensed_files/libs/quarto-html/anchor.min.js"></script>
+<link href="condensed_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="condensed_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="condensed_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="condensed_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="condensed_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Introduction to R</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Mairead Shaw </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="condensed-introduction-to-r" class="level2">
+<h2 class="anchored" data-anchor-id="condensed-introduction-to-r">(Condensed) Introduction to R</h2>
+<p>This document is a pared-down version of the <code>part1.R</code> and <code>part2.R</code> files, intended for a shorter workshop. There is no new content, just a light reorganization to focus less on basic data structures and more on getting up and running using packages and conducting analyses, intended to be delivered as a single 90-minute workshop. It additionally leverages Quarto for presentation, just for fun. :)</p>
+</section>
+<section id="agenda" class="level2">
+<h2 class="anchored" data-anchor-id="agenda">Agenda</h2>
+<ul>
+<li>Why should we code?</li>
+<li>Creating projects</li>
+<li>Variables, vectors, indexing vectors</li>
+<li>Loading files – absolute vs relative filepaths</li>
+<li>Installing and loading packages – <code>dplyr</code>, <code>sjPlot</code></li>
+<li>Inspecting data: <code>head()</code>, <code>tail()</code>, <code>str()</code>, <code>View()</code></li>
+<li>Functions</li>
+<li><code>dplyr</code> verbs: <code>filter()</code>, <code>select()</code>, <code>mutate()</code>, <code>group_by()</code>, <code>arrange()</code></li>
+<li>Statistical tests: t-test, ANOVA, post-hoc testing, linear and logistic regression</li>
+<li>If time, graphing with <code>ggplot2</code></li>
+</ul>
+</section>
+<section id="why-should-we-code" class="level2">
+<h2 class="anchored" data-anchor-id="why-should-we-code">Why Should We Code?</h2>
+<p>We code to accomplish tasks that would be less efficient or impossible to do by hand. There are many different coding languages. Which one you use depends on the task at hand and the conventions of a given field. A lot of programming languages are flexible and <em>can</em> do a lot, but have different things that they excel at. I like to think of coding languages as being like utensils: they help us accomplish a task, and there are a lot of options, but some utensils are better at some jobs (e.g., spoon vs fork for eating soup).</p>
+<p>We’re going to focus on R because that’s a common option in psychological research. Why do people like using R/what makes it well-suited to psychological research? (1) It’s open-source and free, meaning users like you and me can add additional functionality on top of base R, and it’s free for anyone to use. (2) It has an active teaching community, so a lot of great resources for learning are freely available online. (3) Particularly thanks to Posit/RStudio, it’s easy to set up projects and keep files organized. (4) It’s excellent at statistical analyses and graphing.</p>
+<p>Some other options you may come across are SPSS and JASP, which are “point and click.” These are powerful tools and can be totally fine for conducting analyses! They’re just a little less flexible because you’re limited to their existing functionality. They can also be less reproducible, with people clicking around and not saving their work. There are ways to save your work, which you should do if you’re using them.</p>
+</section>
+<section id="creating-projects" class="level2">
+<h2 class="anchored" data-anchor-id="creating-projects">Creating Projects</h2>
+<p>It’s important to keep files clean and organized when you’re working on a project. I like to create folders dedicated to a given project, and then keep all files and data related to that project in a given folder. Let’s create a folder for these workshops. Go to File -&gt; New Project… -&gt; New Directory -&gt; New Project. Create a directory (AKA a folder) and choose where to put it, and click Create Project. This is where your files for these workshops will live! Let’s make a file called <code>intro_to_R.R</code> (ctrl/cmd-shift-N or File -&gt; New File -&gt; R Script) for today’s activities.</p>
+<p>It’s important to keep track of where your files “live” for a given project, as that makes it easier to find your work and have different components interact (e.g., loading a data file in a given script).</p>
+<p>Important things in RStudio to start: we have the console (runs code, doesn’t save the code anywhere permanent), environment (shows all the objects you’ve created, right now we have none), and then the files/plots/help window. When you create a file, you also add a script editor.</p>
+</section>
+<section id="variables-vectors-and-indexing-vectors" class="level2">
+<h2 class="anchored" data-anchor-id="variables-vectors-and-indexing-vectors">Variables, Vectors, and Indexing Vectors</h2>
+<p>R is a flexible language that can perform a lot of tasks, from basic arithmetic up through advanced statistics analyses and graphing. It is often the case that we want to save the results of some work, either to use later on or just to save us from having to re-run things repeatedly. We can save results to a variable using the assignment operator, &lt;- . I don’t want to get into the nitty-gritty, but &lt;- is convention when you’re assigning values to variables, and = is typically used for function parameter definitions. Most important is that you are consistent.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># example 1: creating a variable that contains the result of addition</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>my_addition <span class="ot">&lt;-</span> <span class="dv">35</span> <span class="sc">+</span> <span class="dv">24</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(my_addition)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 59</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># example 2: creating a variable that stores a string (text)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>favourite_fruit <span class="ot">&lt;-</span> <span class="st">"peach"</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(favourite_fruit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "peach"</code></pre>
+</div>
+</div>
+<p>Let’s take a moment here to talk about some coding best practices: commenting and spacing.</p>
+<p>I’m using comments in two ways right now: inline (next to code), and to create sections. Inline, I’m commenting with what I’m doing. This is not just to make it easier for others to read, it’s for myself! You know what you’re doing when you write your code, but when you come back days, weeks, months, years later, you won’t always remember, so it’s useful to have a quick description of what is happening and why. As an additional benefit, it can help people reading your code for the first time as well. With creating sections, I’m organizing my file so it’s easy to navigate with a legend. These lines with a preceding # are comments, so won’t be run when I run my code. If you follow up a comment with at least four hyphens (# —-), you create a new section. I have a ton of hyphens following my comment because it makes it easier to pick out sections when I scroll through the document, and it’s the default of the automatic section creation function in R, which is ctrl-shift-R on a Mac.</p>
+<p>Notice that I’m spacing out everything. I have a space around the assignment operator <code>&lt;-</code>, spaces between the addition/subtraction/multiplication/division sign and the numbers. This is because it’s easier to read. For example, if I write:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span><span class="sc">+</span><span class="dv">2-1</span><span class="sc">*</span><span class="dv">8</span><span class="sc">/</span><span class="dv">3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.333333</code></pre>
+</div>
+</div>
+<p>It is harder to read than:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">-</span> <span class="dv">1</span> <span class="sc">*</span> <span class="dv">8</span> <span class="sc">/</span> <span class="dv">3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.333333</code></pre>
+</div>
+</div>
+<p>This is less noticeable with smaller lines like this, but when you have a bunch of text all at once, it’s very noticeable when it’s hard to read.</p>
+<p>R can store more than single values at once! It can also store multiple elements together, for example the grades in a class or groceries:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>grades <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">88</span>, <span class="dv">89</span>, <span class="dv">85</span>, <span class="dv">91</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(grades)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 88 89 85 91</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>groceries <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"cereal"</span>, <span class="st">"milk"</span>, <span class="st">"bananas"</span>, <span class="st">"dragonfruit"</span>, <span class="st">"chicken"</span>, <span class="st">"basil"</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(groceries)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "cereal"      "milk"        "bananas"     "dragonfruit" "chicken"    
+[6] "basil"      </code></pre>
+</div>
+</div>
+<p>This is very useful for thinking about your data, which is basically a bunch of column vectors (i.e., vectors that are vertically arranged) pushed together. You can index the elements of a vector to see what is stored. In R, indexing starts at 1 (unlike, e.g., Python where the first position is indexed to 0). So to access the value “bananas” from the groceries vector:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>groceries[<span class="dv">3</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "bananas"</code></pre>
+</div>
+</div>
+<p>A vector can only be one data type (integers, doubles [decimal numbers], strings). If you try to put multiple types into one list, the data will be coerced into a common type. For example, grocery items and how many of each to get:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>groceries_numbered <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"cereal"</span>, <span class="dv">1</span>, <span class="st">"milk"</span>, <span class="dv">1</span>, <span class="st">"bananas"</span>, <span class="dv">7</span>, <span class="st">"dragonfruit"</span>, <span class="dv">2</span>, <span class="st">"chicken"</span>, <span class="dv">1</span>, <span class="st">"basil"</span>, <span class="dv">20</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(groceries_numbered) <span class="co"># all entries coerced to strings</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "cereal"      "1"           "milk"        "1"           "bananas"    
+ [6] "7"           "dragonfruit" "2"           "chicken"     "1"          
+[11] "basil"       "20"         </code></pre>
+</div>
+</div>
+<p>Lists, on the other hand (not vectors), can contain multiple types:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>groceries_list <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="st">"cereal"</span>, <span class="dv">1</span>, <span class="st">"milk"</span>, <span class="dv">1</span>, <span class="st">"bananas"</span>, <span class="dv">7</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>groceries_list</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+[1] "cereal"
+
+[[2]]
+[1] 1
+
+[[3]]
+[1] "milk"
+
+[[4]]
+[1] 1
+
+[[5]]
+[1] "bananas"
+
+[[6]]
+[1] 7</code></pre>
+</div>
+</div>
+</section>
+<section id="functions" class="level2">
+<h2 class="anchored" data-anchor-id="functions">Functions</h2>
+<p>Effective use of a programming language involves using the power of functions. We have already seen some functions, like <code>c()</code> (combine or concatenate vectors), <code>print()</code> (print something to the console), <code>list()</code> (create a list). Functions involve three basic ingredients:</p>
+<ol type="1">
+<li>Take some input</li>
+<li>Do some action on the input</li>
+<li>Return an output that results from the action on the input</li>
+</ol>
+<p>As a metaphor, think of the function of an oven.</p>
+<ol type="1">
+<li>Take some input: raw food</li>
+<li>Do some action: get really hot</li>
+<li>Return some output: cooked food</li>
+</ol>
+<p>When you use an oven, you always put in something you want heated, the oven gets hot (to different degrees, which you can specify depending on what you’re putting in it), and it returns the input, but hotter! Functions in programming work like this, too. They take some input, do some action, return some output. For example, the <code>sum()</code> function:</p>
+<ol type="1">
+<li>Take some input: a vector of numbers</li>
+<li>Do some action: add them together</li>
+<li>Return some output: the sum of the numbers</li>
+</ol>
+<p>You can write your own functions as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>function_name <span class="ot">&lt;-</span> <span class="cf">function</span>(variables_for_function) {</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># action</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co"># here is a fake oven function:</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>code_oven <span class="ot">&lt;-</span> <span class="cf">function</span>(food1, food2) {</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"Cooking the foods!"</span>)</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  finished_food <span class="ot">&lt;-</span> <span class="fu">c</span>(food1, <span class="st">"and"</span>, food2)</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(finished_food)</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a><span class="fu">code_oven</span>(<span class="st">"chicken"</span>, <span class="st">"rice"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Cooking the foods!"</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "chicken" "and"     "rice"   </code></pre>
+</div>
+</div>
+</section>
+<section id="installing-and-loading-packages" class="level2">
+<h2 class="anchored" data-anchor-id="installing-and-loading-packages">Installing and Loading Packages</h2>
+<p>You can use existing functions in base R or create your own functions, and you can <em>also</em> use functions written by other people. Recall that R is open-source, meaning anyone can write functions that can be freely used by other people. It’s like Wikipedia in that anyone can write something, but there are editors who check that edits make sense. When people publish their functions to be used by others, those functions are contained in <em>packages</em>. To use a package and the functions therein, you need to (1) install the package, (2) attach the package to your R session (what we have open right now is an R session).</p>
+<p>You only need to install the package once (or when it is updated), but you need to attach it to every session you want to use it in. It’s like any other software: you need to download Google Chrome once to have it on your computer (and sometimes you need to redownload to update it), but every time you want to use it you have to open it.</p>
+<p>Note that I usually put ALL packages I’ll be using at the very top of the document, along with the data I’ll be using.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># to install, need to do this once</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("dplyr") # you need the quotation marks</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("sjPlot")</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co"># to attach to your session, need to do this every session</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"dplyr"</span>) <span class="co"># you can use quotation marks or not when attaching</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sjPlot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'sjPlot' was built under R version 4.4.1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Learn more about sjPlot with 'browseVignettes("sjPlot")'.</code></pre>
+</div>
+</div>
+<p><code>dplyr</code> stands for “data pliers,” and is used for manipulating data. Let’s look at some example datasets included in the dplyr package, starting with mtcars. This has information about cars’ fuel consumption. We will use sjPlot later, when we are presenting the results of our statistical analyses.</p>
+</section>
+<section id="inspecting-data" class="level2">
+<h2 class="anchored" data-anchor-id="inspecting-data">Inspecting Data</h2>
+<p>It is usually a good idea to look over your data when you read it in. Reasons include (1) familiarizing yourself with its structure, (2) briefly checking it read in correctly.</p>
+<p>The mtcars dataset is included in dplyr, which we’ve loaded, so it’s already available to us. A few useful functions for looking at your data in R:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(mtcars) <span class="co"># look at the first few rows</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   mpg cyl disp  hp drat    wt  qsec vs am gear carb
+Mazda RX4         21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
+Mazda RX4 Wag     21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
+Datsun 710        22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
+Hornet 4 Drive    21.4   6  258 110 3.08 3.215 19.44  1  0    3    1
+Hornet Sportabout 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2
+Valiant           18.1   6  225 105 2.76 3.460 20.22  1  0    3    1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(mtcars) <span class="co"># look at the last few rows</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                mpg cyl  disp  hp drat    wt qsec vs am gear carb
+Porsche 914-2  26.0   4 120.3  91 4.43 2.140 16.7  0  1    5    2
+Lotus Europa   30.4   4  95.1 113 3.77 1.513 16.9  1  1    5    2
+Ford Pantera L 15.8   8 351.0 264 4.22 3.170 14.5  0  1    5    4
+Ferrari Dino   19.7   6 145.0 175 3.62 2.770 15.5  0  1    5    6
+Maserati Bora  15.0   8 301.0 335 3.54 3.570 14.6  0  1    5    8
+Volvo 142E     21.4   4 121.0 109 4.11 2.780 18.6  1  1    4    2</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mtcars) <span class="co"># get an overview of values</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      mpg             cyl             disp             hp       
+ Min.   :10.40   Min.   :4.000   Min.   : 71.1   Min.   : 52.0  
+ 1st Qu.:15.43   1st Qu.:4.000   1st Qu.:120.8   1st Qu.: 96.5  
+ Median :19.20   Median :6.000   Median :196.3   Median :123.0  
+ Mean   :20.09   Mean   :6.188   Mean   :230.7   Mean   :146.7  
+ 3rd Qu.:22.80   3rd Qu.:8.000   3rd Qu.:326.0   3rd Qu.:180.0  
+ Max.   :33.90   Max.   :8.000   Max.   :472.0   Max.   :335.0  
+      drat             wt             qsec             vs        
+ Min.   :2.760   Min.   :1.513   Min.   :14.50   Min.   :0.0000  
+ 1st Qu.:3.080   1st Qu.:2.581   1st Qu.:16.89   1st Qu.:0.0000  
+ Median :3.695   Median :3.325   Median :17.71   Median :0.0000  
+ Mean   :3.597   Mean   :3.217   Mean   :17.85   Mean   :0.4375  
+ 3rd Qu.:3.920   3rd Qu.:3.610   3rd Qu.:18.90   3rd Qu.:1.0000  
+ Max.   :4.930   Max.   :5.424   Max.   :22.90   Max.   :1.0000  
+       am              gear            carb      
+ Min.   :0.0000   Min.   :3.000   Min.   :1.000  
+ 1st Qu.:0.0000   1st Qu.:3.000   1st Qu.:2.000  
+ Median :0.0000   Median :4.000   Median :2.000  
+ Mean   :0.4062   Mean   :3.688   Mean   :2.812  
+ 3rd Qu.:1.0000   3rd Qu.:4.000   3rd Qu.:4.000  
+ Max.   :1.0000   Max.   :5.000   Max.   :8.000  </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(mtcars) <span class="co"># overview of data types</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   32 obs. of  11 variables:
+ $ mpg : num  21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 ...
+ $ cyl : num  6 6 4 6 8 6 8 4 4 6 ...
+ $ disp: num  160 160 108 258 360 ...
+ $ hp  : num  110 110 93 110 175 105 245 62 95 123 ...
+ $ drat: num  3.9 3.9 3.85 3.08 3.15 2.76 3.21 3.69 3.92 3.92 ...
+ $ wt  : num  2.62 2.88 2.32 3.21 3.44 ...
+ $ qsec: num  16.5 17 18.6 19.4 17 ...
+ $ vs  : num  0 0 1 1 0 1 0 1 1 1 ...
+ $ am  : num  1 1 1 0 0 0 0 0 0 0 ...
+ $ gear: num  4 4 4 3 3 3 3 4 4 4 ...
+ $ carb: num  4 4 1 1 2 1 4 2 2 4 ...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(mtcars) <span class="co"># view the entire dataset</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="data-manipulation-with-dplyr" class="level2">
+<h2 class="anchored" data-anchor-id="data-manipulation-with-dplyr">Data Manipulation with <code>dplyr</code></h2>
+<p>Unlike in Excel, you can’t access the data directly when Viewing it. Why? Because it’s better to change it using your code in a reproducible way (no wondering if values were changed, forgetting what was changed or moved, etc.), and that’s where dplyr comes in! It’s an R package used for data manipulation, with a few main functions: filter (choosing certain rows), select (choosing certain columns), mutate (adding/changing columns), arrange (order of rows), summarize (summarizing, as the name suggests).</p>
+<section id="filter" class="level3">
+<h3 class="anchored" data-anchor-id="filter">Filter</h3>
+<p>Our dataset has information about cars’ number of cylinders. Generally, more cylinders = more power. We can use equality/relational statements to filter the dataset to cars that have more than/less than/equal to a certain number of cylinders.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(mtcars, cyl <span class="sc">==</span> <span class="dv">6</span>) <span class="co"># equal to, notice the two ==</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+Mazda RX4      21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+Mazda RX4 Wag  21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+Valiant        18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+Merc 280       19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
+Merc 280C      17.8   6 167.6 123 3.92 3.440 18.90  1  0    4    4
+Ferrari Dino   19.7   6 145.0 175 3.62 2.770 15.50  0  1    5    6</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(mtcars, cyl <span class="sc">&lt;</span> <span class="dv">6</span>) <span class="co"># less than 6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+Datsun 710     22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+Merc 240D      24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
+Merc 230       22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
+Fiat 128       32.4   4  78.7  66 4.08 2.200 19.47  1  1    4    1
+Honda Civic    30.4   4  75.7  52 4.93 1.615 18.52  1  1    4    2
+Toyota Corolla 33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
+Toyota Corona  21.5   4 120.1  97 3.70 2.465 20.01  1  0    3    1
+Fiat X1-9      27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
+Porsche 914-2  26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
+Lotus Europa   30.4   4  95.1 113 3.77 1.513 16.90  1  1    5    2
+Volvo 142E     21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(mtcars, cyl <span class="sc">&gt;</span> <span class="dv">6</span>) <span class="co"># greater than 6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+Merc 450SE          16.4   8 275.8 180 3.07 4.070 17.40  0  0    3    3
+Merc 450SL          17.3   8 275.8 180 3.07 3.730 17.60  0  0    3    3
+Merc 450SLC         15.2   8 275.8 180 3.07 3.780 18.00  0  0    3    3
+Cadillac Fleetwood  10.4   8 472.0 205 2.93 5.250 17.98  0  0    3    4
+Lincoln Continental 10.4   8 460.0 215 3.00 5.424 17.82  0  0    3    4
+Chrysler Imperial   14.7   8 440.0 230 3.23 5.345 17.42  0  0    3    4
+Dodge Challenger    15.5   8 318.0 150 2.76 3.520 16.87  0  0    3    2
+AMC Javelin         15.2   8 304.0 150 3.15 3.435 17.30  0  0    3    2
+Camaro Z28          13.3   8 350.0 245 3.73 3.840 15.41  0  0    3    4
+Pontiac Firebird    19.2   8 400.0 175 3.08 3.845 17.05  0  0    3    2
+Ford Pantera L      15.8   8 351.0 264 4.22 3.170 14.50  0  1    5    4
+Maserati Bora       15.0   8 301.0 335 3.54 3.570 14.60  0  1    5    8</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(mtcars, cyl <span class="sc">&lt;=</span> <span class="dv">6</span>) <span class="co"># less than or equal to</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+Mazda RX4      21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+Mazda RX4 Wag  21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+Datsun 710     22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+Valiant        18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+Merc 240D      24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
+Merc 230       22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
+Merc 280       19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
+Merc 280C      17.8   6 167.6 123 3.92 3.440 18.90  1  0    4    4
+Fiat 128       32.4   4  78.7  66 4.08 2.200 19.47  1  1    4    1
+Honda Civic    30.4   4  75.7  52 4.93 1.615 18.52  1  1    4    2
+Toyota Corolla 33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
+Toyota Corona  21.5   4 120.1  97 3.70 2.465 20.01  1  0    3    1
+Fiat X1-9      27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
+Porsche 914-2  26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
+Lotus Europa   30.4   4  95.1 113 3.77 1.513 16.90  1  1    5    2
+Ferrari Dino   19.7   6 145.0 175 3.62 2.770 15.50  0  1    5    6
+Volvo 142E     21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2</code></pre>
+</div>
+</div>
+<p>Take cyl == 6. We can see that there are 7 rows. But if we call mtcars, it’s still the full dataset.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>mtcars</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+Merc 240D           24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
+Merc 230            22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
+Merc 280            19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
+Merc 280C           17.8   6 167.6 123 3.92 3.440 18.90  1  0    4    4
+Merc 450SE          16.4   8 275.8 180 3.07 4.070 17.40  0  0    3    3
+Merc 450SL          17.3   8 275.8 180 3.07 3.730 17.60  0  0    3    3
+Merc 450SLC         15.2   8 275.8 180 3.07 3.780 18.00  0  0    3    3
+Cadillac Fleetwood  10.4   8 472.0 205 2.93 5.250 17.98  0  0    3    4
+Lincoln Continental 10.4   8 460.0 215 3.00 5.424 17.82  0  0    3    4
+Chrysler Imperial   14.7   8 440.0 230 3.23 5.345 17.42  0  0    3    4
+Fiat 128            32.4   4  78.7  66 4.08 2.200 19.47  1  1    4    1
+Honda Civic         30.4   4  75.7  52 4.93 1.615 18.52  1  1    4    2
+Toyota Corolla      33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
+Toyota Corona       21.5   4 120.1  97 3.70 2.465 20.01  1  0    3    1
+Dodge Challenger    15.5   8 318.0 150 2.76 3.520 16.87  0  0    3    2
+AMC Javelin         15.2   8 304.0 150 3.15 3.435 17.30  0  0    3    2
+Camaro Z28          13.3   8 350.0 245 3.73 3.840 15.41  0  0    3    4
+Pontiac Firebird    19.2   8 400.0 175 3.08 3.845 17.05  0  0    3    2
+Fiat X1-9           27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
+Porsche 914-2       26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
+Lotus Europa        30.4   4  95.1 113 3.77 1.513 16.90  1  1    5    2
+Ford Pantera L      15.8   8 351.0 264 4.22 3.170 14.50  0  1    5    4
+Ferrari Dino        19.7   6 145.0 175 3.62 2.770 15.50  0  1    5    6
+Maserati Bora       15.0   8 301.0 335 3.54 3.570 14.60  0  1    5    8
+Volvo 142E          21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2</code></pre>
+</div>
+</div>
+<p>That’s because we didn’t save it to a new dataset. If we want to work with a new dataset, we would need to save it to a variable.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>mtcars_6cyl <span class="ot">&lt;-</span> <span class="fu">filter</span>(mtcars, cyl <span class="sc">==</span> <span class="dv">6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="select" class="level3">
+<h3 class="anchored" data-anchor-id="select">Select</h3>
+<p>So filter chooses certain rows. Select chooses certain columns! Let’s say we just wanted to look at the car’s miles per gallon (mpg) and cylinders (cyl).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># either way works</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(mtcars, mpg, cyl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     mpg cyl
+Mazda RX4           21.0   6
+Mazda RX4 Wag       21.0   6
+Datsun 710          22.8   4
+Hornet 4 Drive      21.4   6
+Hornet Sportabout   18.7   8
+Valiant             18.1   6
+Duster 360          14.3   8
+Merc 240D           24.4   4
+Merc 230            22.8   4
+Merc 280            19.2   6
+Merc 280C           17.8   6
+Merc 450SE          16.4   8
+Merc 450SL          17.3   8
+Merc 450SLC         15.2   8
+Cadillac Fleetwood  10.4   8
+Lincoln Continental 10.4   8
+Chrysler Imperial   14.7   8
+Fiat 128            32.4   4
+Honda Civic         30.4   4
+Toyota Corolla      33.9   4
+Toyota Corona       21.5   4
+Dodge Challenger    15.5   8
+AMC Javelin         15.2   8
+Camaro Z28          13.3   8
+Pontiac Firebird    19.2   8
+Fiat X1-9           27.3   4
+Porsche 914-2       26.0   4
+Lotus Europa        30.4   4
+Ford Pantera L      15.8   8
+Ferrari Dino        19.7   6
+Maserati Bora       15.0   8
+Volvo 142E          21.4   4</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(mtcars, <span class="fu">c</span>(mpg, cyl))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     mpg cyl
+Mazda RX4           21.0   6
+Mazda RX4 Wag       21.0   6
+Datsun 710          22.8   4
+Hornet 4 Drive      21.4   6
+Hornet Sportabout   18.7   8
+Valiant             18.1   6
+Duster 360          14.3   8
+Merc 240D           24.4   4
+Merc 230            22.8   4
+Merc 280            19.2   6
+Merc 280C           17.8   6
+Merc 450SE          16.4   8
+Merc 450SL          17.3   8
+Merc 450SLC         15.2   8
+Cadillac Fleetwood  10.4   8
+Lincoln Continental 10.4   8
+Chrysler Imperial   14.7   8
+Fiat 128            32.4   4
+Honda Civic         30.4   4
+Toyota Corolla      33.9   4
+Toyota Corona       21.5   4
+Dodge Challenger    15.5   8
+AMC Javelin         15.2   8
+Camaro Z28          13.3   8
+Pontiac Firebird    19.2   8
+Fiat X1-9           27.3   4
+Porsche 914-2       26.0   4
+Lotus Europa        30.4   4
+Ford Pantera L      15.8   8
+Ferrari Dino        19.7   6
+Maserati Bora       15.0   8
+Volvo 142E          21.4   4</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co"># again, if we wanted a new dataset, we would have to save it</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>mtcars_mpg_cyl <span class="ot">&lt;-</span> <span class="fu">select</span>(mtcars, <span class="fu">c</span>(mpg, cyl))</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a><span class="co"># You can also *deselect* certain columns using a minus sign.</span></span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(mtcars, <span class="sc">-</span>mpg) <span class="co"># removes mpg</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    cyl  disp  hp drat    wt  qsec vs am gear carb
+Mazda RX4             6 160.0 110 3.90 2.620 16.46  0  1    4    4
+Mazda RX4 Wag         6 160.0 110 3.90 2.875 17.02  0  1    4    4
+Datsun 710            4 108.0  93 3.85 2.320 18.61  1  1    4    1
+Hornet 4 Drive        6 258.0 110 3.08 3.215 19.44  1  0    3    1
+Hornet Sportabout     8 360.0 175 3.15 3.440 17.02  0  0    3    2
+Valiant               6 225.0 105 2.76 3.460 20.22  1  0    3    1
+Duster 360            8 360.0 245 3.21 3.570 15.84  0  0    3    4
+Merc 240D             4 146.7  62 3.69 3.190 20.00  1  0    4    2
+Merc 230              4 140.8  95 3.92 3.150 22.90  1  0    4    2
+Merc 280              6 167.6 123 3.92 3.440 18.30  1  0    4    4
+Merc 280C             6 167.6 123 3.92 3.440 18.90  1  0    4    4
+Merc 450SE            8 275.8 180 3.07 4.070 17.40  0  0    3    3
+Merc 450SL            8 275.8 180 3.07 3.730 17.60  0  0    3    3
+Merc 450SLC           8 275.8 180 3.07 3.780 18.00  0  0    3    3
+Cadillac Fleetwood    8 472.0 205 2.93 5.250 17.98  0  0    3    4
+Lincoln Continental   8 460.0 215 3.00 5.424 17.82  0  0    3    4
+Chrysler Imperial     8 440.0 230 3.23 5.345 17.42  0  0    3    4
+Fiat 128              4  78.7  66 4.08 2.200 19.47  1  1    4    1
+Honda Civic           4  75.7  52 4.93 1.615 18.52  1  1    4    2
+Toyota Corolla        4  71.1  65 4.22 1.835 19.90  1  1    4    1
+Toyota Corona         4 120.1  97 3.70 2.465 20.01  1  0    3    1
+Dodge Challenger      8 318.0 150 2.76 3.520 16.87  0  0    3    2
+AMC Javelin           8 304.0 150 3.15 3.435 17.30  0  0    3    2
+Camaro Z28            8 350.0 245 3.73 3.840 15.41  0  0    3    4
+Pontiac Firebird      8 400.0 175 3.08 3.845 17.05  0  0    3    2
+Fiat X1-9             4  79.0  66 4.08 1.935 18.90  1  1    4    1
+Porsche 914-2         4 120.3  91 4.43 2.140 16.70  0  1    5    2
+Lotus Europa          4  95.1 113 3.77 1.513 16.90  1  1    5    2
+Ford Pantera L        8 351.0 264 4.22 3.170 14.50  0  1    5    4
+Ferrari Dino          6 145.0 175 3.62 2.770 15.50  0  1    5    6
+Maserati Bora         8 301.0 335 3.54 3.570 14.60  0  1    5    8
+Volvo 142E            4 121.0 109 4.11 2.780 18.60  1  1    4    2</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(mtcars, <span class="sc">-</span><span class="fu">c</span>(mpg, cyl)) <span class="co"># removes mpg and cyl</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     disp  hp drat    wt  qsec vs am gear carb
+Mazda RX4           160.0 110 3.90 2.620 16.46  0  1    4    4
+Mazda RX4 Wag       160.0 110 3.90 2.875 17.02  0  1    4    4
+Datsun 710          108.0  93 3.85 2.320 18.61  1  1    4    1
+Hornet 4 Drive      258.0 110 3.08 3.215 19.44  1  0    3    1
+Hornet Sportabout   360.0 175 3.15 3.440 17.02  0  0    3    2
+Valiant             225.0 105 2.76 3.460 20.22  1  0    3    1
+Duster 360          360.0 245 3.21 3.570 15.84  0  0    3    4
+Merc 240D           146.7  62 3.69 3.190 20.00  1  0    4    2
+Merc 230            140.8  95 3.92 3.150 22.90  1  0    4    2
+Merc 280            167.6 123 3.92 3.440 18.30  1  0    4    4
+Merc 280C           167.6 123 3.92 3.440 18.90  1  0    4    4
+Merc 450SE          275.8 180 3.07 4.070 17.40  0  0    3    3
+Merc 450SL          275.8 180 3.07 3.730 17.60  0  0    3    3
+Merc 450SLC         275.8 180 3.07 3.780 18.00  0  0    3    3
+Cadillac Fleetwood  472.0 205 2.93 5.250 17.98  0  0    3    4
+Lincoln Continental 460.0 215 3.00 5.424 17.82  0  0    3    4
+Chrysler Imperial   440.0 230 3.23 5.345 17.42  0  0    3    4
+Fiat 128             78.7  66 4.08 2.200 19.47  1  1    4    1
+Honda Civic          75.7  52 4.93 1.615 18.52  1  1    4    2
+Toyota Corolla       71.1  65 4.22 1.835 19.90  1  1    4    1
+Toyota Corona       120.1  97 3.70 2.465 20.01  1  0    3    1
+Dodge Challenger    318.0 150 2.76 3.520 16.87  0  0    3    2
+AMC Javelin         304.0 150 3.15 3.435 17.30  0  0    3    2
+Camaro Z28          350.0 245 3.73 3.840 15.41  0  0    3    4
+Pontiac Firebird    400.0 175 3.08 3.845 17.05  0  0    3    2
+Fiat X1-9            79.0  66 4.08 1.935 18.90  1  1    4    1
+Porsche 914-2       120.3  91 4.43 2.140 16.70  0  1    5    2
+Lotus Europa         95.1 113 3.77 1.513 16.90  1  1    5    2
+Ford Pantera L      351.0 264 4.22 3.170 14.50  0  1    5    4
+Ferrari Dino        145.0 175 3.62 2.770 15.50  0  1    5    6
+Maserati Bora       301.0 335 3.54 3.570 14.60  0  1    5    8
+Volvo 142E          121.0 109 4.11 2.780 18.60  1  1    4    2</code></pre>
+</div>
+</div>
+</section>
+<section id="mutate" class="level3">
+<h3 class="anchored" data-anchor-id="mutate">Mutate</h3>
+<p>Mutate adds or changes column values. For example, we have the variable qsec which is the time it takes a car to go a quarter of a mile, in seconds. Maybe we want to know how quickly it can go one mile. Let’s multiply by four.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mutate</span>(mtcars, <span class="at">milesec =</span> <span class="dv">4</span><span class="sc">*</span>qsec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb milesec
+Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4   65.84
+Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4   68.08
+Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1   74.44
+Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1   77.76
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2   68.08
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1   80.88
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4   63.36
+Merc 240D           24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2   80.00
+Merc 230            22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2   91.60
+Merc 280            19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4   73.20
+Merc 280C           17.8   6 167.6 123 3.92 3.440 18.90  1  0    4    4   75.60
+Merc 450SE          16.4   8 275.8 180 3.07 4.070 17.40  0  0    3    3   69.60
+Merc 450SL          17.3   8 275.8 180 3.07 3.730 17.60  0  0    3    3   70.40
+Merc 450SLC         15.2   8 275.8 180 3.07 3.780 18.00  0  0    3    3   72.00
+Cadillac Fleetwood  10.4   8 472.0 205 2.93 5.250 17.98  0  0    3    4   71.92
+Lincoln Continental 10.4   8 460.0 215 3.00 5.424 17.82  0  0    3    4   71.28
+Chrysler Imperial   14.7   8 440.0 230 3.23 5.345 17.42  0  0    3    4   69.68
+Fiat 128            32.4   4  78.7  66 4.08 2.200 19.47  1  1    4    1   77.88
+Honda Civic         30.4   4  75.7  52 4.93 1.615 18.52  1  1    4    2   74.08
+Toyota Corolla      33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1   79.60
+Toyota Corona       21.5   4 120.1  97 3.70 2.465 20.01  1  0    3    1   80.04
+Dodge Challenger    15.5   8 318.0 150 2.76 3.520 16.87  0  0    3    2   67.48
+AMC Javelin         15.2   8 304.0 150 3.15 3.435 17.30  0  0    3    2   69.20
+Camaro Z28          13.3   8 350.0 245 3.73 3.840 15.41  0  0    3    4   61.64
+Pontiac Firebird    19.2   8 400.0 175 3.08 3.845 17.05  0  0    3    2   68.20
+Fiat X1-9           27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1   75.60
+Porsche 914-2       26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2   66.80
+Lotus Europa        30.4   4  95.1 113 3.77 1.513 16.90  1  1    5    2   67.60
+Ford Pantera L      15.8   8 351.0 264 4.22 3.170 14.50  0  1    5    4   58.00
+Ferrari Dino        19.7   6 145.0 175 3.62 2.770 15.50  0  1    5    6   62.00
+Maserati Bora       15.0   8 301.0 335 3.54 3.570 14.60  0  1    5    8   58.40
+Volvo 142E          21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2   74.40</code></pre>
+</div>
+</div>
+</section>
+<section id="group-by" class="level3">
+<h3 class="anchored" data-anchor-id="group-by">Group By</h3>
+<p>Grouping is a powerful operation for data manipulation. Sometimes you want information about an entire group, for example maybe we want the average horsepower across cylinders. To do that, we first group the dataset by number of cylinders, then use the mutate function to calculate average horsepower for each group, and then ungroup and go on with our day.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ungroup</span>(<span class="fu">mutate</span>(<span class="fu">group_by</span>(mtcars, cyl), <span class="at">hp_average =</span> <span class="fu">mean</span>(hp)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 32 × 12
+     mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb hp_average
+   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;
+ 1  21       6  160    110  3.9   2.62  16.5     0     1     4     4      122. 
+ 2  21       6  160    110  3.9   2.88  17.0     0     1     4     4      122. 
+ 3  22.8     4  108     93  3.85  2.32  18.6     1     1     4     1       82.6
+ 4  21.4     6  258    110  3.08  3.22  19.4     1     0     3     1      122. 
+ 5  18.7     8  360    175  3.15  3.44  17.0     0     0     3     2      209. 
+ 6  18.1     6  225    105  2.76  3.46  20.2     1     0     3     1      122. 
+ 7  14.3     8  360    245  3.21  3.57  15.8     0     0     3     4      209. 
+ 8  24.4     4  147.    62  3.69  3.19  20       1     0     4     2       82.6
+ 9  22.8     4  141.    95  3.92  3.15  22.9     1     0     4     2       82.6
+10  19.2     6  168.   123  3.92  3.44  18.3     1     0     4     4      122. 
+# ℹ 22 more rows</code></pre>
+</div>
+</div>
+<p>You might notice that it’s getting a little difficult to read! This is where the “pipe” operator comes in. In older versions of R, it looks like this <code>%&gt;%</code> and you have to attach the packages dplyr or magrittr to your session to use it. In R 4.1 and newer, there is a pipe built into base R, which looks like <code>|&gt;</code>. The pipe makes it easier to read your code, because it takes the result of what you just ran, and passes it on to the next thing you’re going to run. Our same operation looks like this using the pipe:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>mtcars <span class="sc">|&gt;</span>                           <span class="co"># take the dataset and pass it forward</span></span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(cyl) <span class="sc">|&gt;</span>                  <span class="co"># group the dataset by cyl and pass it forward</span></span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">hp_average =</span> <span class="fu">mean</span>(hp)) <span class="sc">|&gt;</span>  <span class="co"># calculate the mean horsepower</span></span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()                          <span class="co"># ungroup the dataset and print the result</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 32 × 12
+     mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb hp_average
+   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;
+ 1  21       6  160    110  3.9   2.62  16.5     0     1     4     4      122. 
+ 2  21       6  160    110  3.9   2.88  17.0     0     1     4     4      122. 
+ 3  22.8     4  108     93  3.85  2.32  18.6     1     1     4     1       82.6
+ 4  21.4     6  258    110  3.08  3.22  19.4     1     0     3     1      122. 
+ 5  18.7     8  360    175  3.15  3.44  17.0     0     0     3     2      209. 
+ 6  18.1     6  225    105  2.76  3.46  20.2     1     0     3     1      122. 
+ 7  14.3     8  360    245  3.21  3.57  15.8     0     0     3     4      209. 
+ 8  24.4     4  147.    62  3.69  3.19  20       1     0     4     2       82.6
+ 9  22.8     4  141.    95  3.92  3.15  22.9     1     0     4     2       82.6
+10  19.2     6  168.   123  3.92  3.44  18.3     1     0     4     4      122. 
+# ℹ 22 more rows</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="co"># again, if you want to save the result of your calculation, you need to save it</span></span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="co"># to a variable</span></span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>mtcars_hp <span class="ot">&lt;-</span> mtcars <span class="sc">|&gt;</span></span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(cyl) <span class="sc">|&gt;</span></span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">hp_average =</span> <span class="fu">mean</span>(hp)) <span class="sc">|&gt;</span></span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="arrange" class="level3">
+<h3 class="anchored" data-anchor-id="arrange">Arrange</h3>
+<p>Arrange organizes the rows in ascending or descending order. The default is ascending, i.e., lowest values at the top. If we want to see the lowest horsepower cars first:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">arrange</span>(mtcars, hp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+Honda Civic         30.4   4  75.7  52 4.93 1.615 18.52  1  1    4    2
+Merc 240D           24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
+Toyota Corolla      33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
+Fiat 128            32.4   4  78.7  66 4.08 2.200 19.47  1  1    4    1
+Fiat X1-9           27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
+Porsche 914-2       26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
+Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+Merc 230            22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
+Toyota Corona       21.5   4 120.1  97 3.70 2.465 20.01  1  0    3    1
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+Volvo 142E          21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2
+Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+Lotus Europa        30.4   4  95.1 113 3.77 1.513 16.90  1  1    5    2
+Merc 280            19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
+Merc 280C           17.8   6 167.6 123 3.92 3.440 18.90  1  0    4    4
+Dodge Challenger    15.5   8 318.0 150 2.76 3.520 16.87  0  0    3    2
+AMC Javelin         15.2   8 304.0 150 3.15 3.435 17.30  0  0    3    2
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+Pontiac Firebird    19.2   8 400.0 175 3.08 3.845 17.05  0  0    3    2
+Ferrari Dino        19.7   6 145.0 175 3.62 2.770 15.50  0  1    5    6
+Merc 450SE          16.4   8 275.8 180 3.07 4.070 17.40  0  0    3    3
+Merc 450SL          17.3   8 275.8 180 3.07 3.730 17.60  0  0    3    3
+Merc 450SLC         15.2   8 275.8 180 3.07 3.780 18.00  0  0    3    3
+Cadillac Fleetwood  10.4   8 472.0 205 2.93 5.250 17.98  0  0    3    4
+Lincoln Continental 10.4   8 460.0 215 3.00 5.424 17.82  0  0    3    4
+Chrysler Imperial   14.7   8 440.0 230 3.23 5.345 17.42  0  0    3    4
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+Camaro Z28          13.3   8 350.0 245 3.73 3.840 15.41  0  0    3    4
+Ford Pantera L      15.8   8 351.0 264 4.22 3.170 14.50  0  1    5    4
+Maserati Bora       15.0   8 301.0 335 3.54 3.570 14.60  0  1    5    8</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>mtcars <span class="sc">|&gt;</span> <span class="fu">arrange</span>(hp) <span class="co"># with the pipe</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+Honda Civic         30.4   4  75.7  52 4.93 1.615 18.52  1  1    4    2
+Merc 240D           24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
+Toyota Corolla      33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
+Fiat 128            32.4   4  78.7  66 4.08 2.200 19.47  1  1    4    1
+Fiat X1-9           27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
+Porsche 914-2       26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
+Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+Merc 230            22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
+Toyota Corona       21.5   4 120.1  97 3.70 2.465 20.01  1  0    3    1
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+Volvo 142E          21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2
+Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+Lotus Europa        30.4   4  95.1 113 3.77 1.513 16.90  1  1    5    2
+Merc 280            19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
+Merc 280C           17.8   6 167.6 123 3.92 3.440 18.90  1  0    4    4
+Dodge Challenger    15.5   8 318.0 150 2.76 3.520 16.87  0  0    3    2
+AMC Javelin         15.2   8 304.0 150 3.15 3.435 17.30  0  0    3    2
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+Pontiac Firebird    19.2   8 400.0 175 3.08 3.845 17.05  0  0    3    2
+Ferrari Dino        19.7   6 145.0 175 3.62 2.770 15.50  0  1    5    6
+Merc 450SE          16.4   8 275.8 180 3.07 4.070 17.40  0  0    3    3
+Merc 450SL          17.3   8 275.8 180 3.07 3.730 17.60  0  0    3    3
+Merc 450SLC         15.2   8 275.8 180 3.07 3.780 18.00  0  0    3    3
+Cadillac Fleetwood  10.4   8 472.0 205 2.93 5.250 17.98  0  0    3    4
+Lincoln Continental 10.4   8 460.0 215 3.00 5.424 17.82  0  0    3    4
+Chrysler Imperial   14.7   8 440.0 230 3.23 5.345 17.42  0  0    3    4
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+Camaro Z28          13.3   8 350.0 245 3.73 3.840 15.41  0  0    3    4
+Ford Pantera L      15.8   8 351.0 264 4.22 3.170 14.50  0  1    5    4
+Maserati Bora       15.0   8 301.0 335 3.54 3.570 14.60  0  1    5    8</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="co"># highest horsepower, use desc() for descending</span></span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a><span class="fu">arrange</span>(mtcars, <span class="fu">desc</span>(hp))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+Maserati Bora       15.0   8 301.0 335 3.54 3.570 14.60  0  1    5    8
+Ford Pantera L      15.8   8 351.0 264 4.22 3.170 14.50  0  1    5    4
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+Camaro Z28          13.3   8 350.0 245 3.73 3.840 15.41  0  0    3    4
+Chrysler Imperial   14.7   8 440.0 230 3.23 5.345 17.42  0  0    3    4
+Lincoln Continental 10.4   8 460.0 215 3.00 5.424 17.82  0  0    3    4
+Cadillac Fleetwood  10.4   8 472.0 205 2.93 5.250 17.98  0  0    3    4
+Merc 450SE          16.4   8 275.8 180 3.07 4.070 17.40  0  0    3    3
+Merc 450SL          17.3   8 275.8 180 3.07 3.730 17.60  0  0    3    3
+Merc 450SLC         15.2   8 275.8 180 3.07 3.780 18.00  0  0    3    3
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+Pontiac Firebird    19.2   8 400.0 175 3.08 3.845 17.05  0  0    3    2
+Ferrari Dino        19.7   6 145.0 175 3.62 2.770 15.50  0  1    5    6
+Dodge Challenger    15.5   8 318.0 150 2.76 3.520 16.87  0  0    3    2
+AMC Javelin         15.2   8 304.0 150 3.15 3.435 17.30  0  0    3    2
+Merc 280            19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
+Merc 280C           17.8   6 167.6 123 3.92 3.440 18.90  1  0    4    4
+Lotus Europa        30.4   4  95.1 113 3.77 1.513 16.90  1  1    5    2
+Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+Volvo 142E          21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+Toyota Corona       21.5   4 120.1  97 3.70 2.465 20.01  1  0    3    1
+Merc 230            22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
+Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+Porsche 914-2       26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
+Fiat 128            32.4   4  78.7  66 4.08 2.200 19.47  1  1    4    1
+Fiat X1-9           27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
+Toyota Corolla      33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
+Merc 240D           24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
+Honda Civic         30.4   4  75.7  52 4.93 1.615 18.52  1  1    4    2</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>mtcars <span class="sc">|&gt;</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(hp))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+Maserati Bora       15.0   8 301.0 335 3.54 3.570 14.60  0  1    5    8
+Ford Pantera L      15.8   8 351.0 264 4.22 3.170 14.50  0  1    5    4
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+Camaro Z28          13.3   8 350.0 245 3.73 3.840 15.41  0  0    3    4
+Chrysler Imperial   14.7   8 440.0 230 3.23 5.345 17.42  0  0    3    4
+Lincoln Continental 10.4   8 460.0 215 3.00 5.424 17.82  0  0    3    4
+Cadillac Fleetwood  10.4   8 472.0 205 2.93 5.250 17.98  0  0    3    4
+Merc 450SE          16.4   8 275.8 180 3.07 4.070 17.40  0  0    3    3
+Merc 450SL          17.3   8 275.8 180 3.07 3.730 17.60  0  0    3    3
+Merc 450SLC         15.2   8 275.8 180 3.07 3.780 18.00  0  0    3    3
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+Pontiac Firebird    19.2   8 400.0 175 3.08 3.845 17.05  0  0    3    2
+Ferrari Dino        19.7   6 145.0 175 3.62 2.770 15.50  0  1    5    6
+Dodge Challenger    15.5   8 318.0 150 2.76 3.520 16.87  0  0    3    2
+AMC Javelin         15.2   8 304.0 150 3.15 3.435 17.30  0  0    3    2
+Merc 280            19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
+Merc 280C           17.8   6 167.6 123 3.92 3.440 18.90  1  0    4    4
+Lotus Europa        30.4   4  95.1 113 3.77 1.513 16.90  1  1    5    2
+Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+Volvo 142E          21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+Toyota Corona       21.5   4 120.1  97 3.70 2.465 20.01  1  0    3    1
+Merc 230            22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
+Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+Porsche 914-2       26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
+Fiat 128            32.4   4  78.7  66 4.08 2.200 19.47  1  1    4    1
+Fiat X1-9           27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
+Toyota Corolla      33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
+Merc 240D           24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
+Honda Civic         30.4   4  75.7  52 4.93 1.615 18.52  1  1    4    2</code></pre>
+</div>
+</div>
+</section>
+<section id="summarizesummarise-either-spelling-works" class="level3">
+<h3 class="anchored" data-anchor-id="summarizesummarise-either-spelling-works">Summarize/Summarise (either spelling works)</h3>
+<p>Summarize creates a new data frame summarizing some data. If the data are ungrouped, it returns one row. If the data are grouped, it returns one row per group. See some functions in the documentation: <code>?summarize</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>mtcars <span class="sc">|&gt;</span></span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean =</span> <span class="fu">mean</span>(hp),</span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">n =</span> <span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      mean  n
+1 146.6875 32</code></pre>
+</div>
+</div>
+<p>There are a bunch of other functions, as well, like renaming columns, removing them, doing rowwise operations, etc. https://dplyr.tidyverse.org/</p>
+</section>
+</section>
+<section id="statistical-analyses" class="level2">
+<h2 class="anchored" data-anchor-id="statistical-analyses">Statistical Analyses</h2>
+<p>Let’s do some common statistical analyses using a second dataset, starwars, which is included with dplyr and has information about 14 Star Wars characters like their height, mass, gender, species, etc. I saved it as a csv so we can practice loading files from outside of R.</p>
+<p>Option 1: relative filepath, which points to the file <em>relative</em> to your current location.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>starwars <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"starwars.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Your current directory is the starting point for where your computer will look for the file. If <code>starwars.csv</code> is in the current folder, then great, your computer will find it! If you created a sub-folder, e.g., <code>data</code>, then you need to specify that your computer needs to search there for the file: <code>read.csv("data/starwars.csv")</code>.</p>
+<p>Option 2: absolute filepath. NOT RECOMMENDED. Your code will not work when someone else loads it because it will be referencing a specific filepath on <em>your</em> computer.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="co"># starwars &lt;- read.csv("/Users/yourname/R_tutorial/starwars.csv")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s inspect our data to see if it read in correctly:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(starwars) <span class="co"># first few rows</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            name height mass  hair_color  skin_color eye_color birth_year
+1 Luke Skywalker    172   77       blond        fair      blue       19.0
+2          C-3PO    167   75        &lt;NA&gt;        gold    yellow      112.0
+3          R2-D2     96   32        &lt;NA&gt; white, blue       red       33.0
+4    Darth Vader    202  136        none       white    yellow       41.9
+5    Leia Organa    150   49       brown       light     brown       19.0
+6      Owen Lars    178  120 brown, grey       light      blue       52.0
+     sex    gender homeworld species
+1   male masculine  Tatooine   Human
+2   none masculine  Tatooine   Droid
+3   none masculine     Naboo   Droid
+4   male masculine  Tatooine   Human
+5 female  feminine  Alderaan   Human
+6   male masculine  Tatooine   Human</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(starwars) <span class="co"># summaries of variables</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     name               height           mass          hair_color       
+ Length:87          Min.   : 66.0   Min.   :  15.00   Length:87         
+ Class :character   1st Qu.:167.0   1st Qu.:  55.60   Class :character  
+ Mode  :character   Median :180.0   Median :  79.00   Mode  :character  
+                    Mean   :174.6   Mean   :  97.31                     
+                    3rd Qu.:191.0   3rd Qu.:  84.50                     
+                    Max.   :264.0   Max.   :1358.00                     
+                    NA's   :6       NA's   :28                          
+  skin_color         eye_color           birth_year         sex           
+ Length:87          Length:87          Min.   :  8.00   Length:87         
+ Class :character   Class :character   1st Qu.: 35.00   Class :character  
+ Mode  :character   Mode  :character   Median : 52.00   Mode  :character  
+                                       Mean   : 87.57                     
+                                       3rd Qu.: 72.00                     
+                                       Max.   :896.00                     
+                                       NA's   :44                         
+    gender           homeworld           species         
+ Length:87          Length:87          Length:87         
+ Class :character   Class :character   Class :character  
+ Mode  :character   Mode  :character   Mode  :character  
+                                                         
+                                                         
+                                                         
+                                                         </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(starwars) <span class="co"># structures</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   87 obs. of  11 variables:
+ $ name      : chr  "Luke Skywalker" "C-3PO" "R2-D2" "Darth Vader" ...
+ $ height    : int  172 167 96 202 150 178 165 97 183 182 ...
+ $ mass      : num  77 75 32 136 49 120 75 32 84 77 ...
+ $ hair_color: chr  "blond" NA NA "none" ...
+ $ skin_color: chr  "fair" "gold" "white, blue" "white" ...
+ $ eye_color : chr  "blue" "yellow" "red" "yellow" ...
+ $ birth_year: num  19 112 33 41.9 19 52 47 NA 24 57 ...
+ $ sex       : chr  "male" "none" "none" "male" ...
+ $ gender    : chr  "masculine" "masculine" "masculine" "masculine" ...
+ $ homeworld : chr  "Tatooine" "Tatooine" "Naboo" "Tatooine" ...
+ $ species   : chr  "Human" "Droid" "Droid" "Human" ...</code></pre>
+</div>
+</div>
+<p>We’ll focus on a few analyses that you might encounter or that you’ve seen before: t-tests, ANOVAs, linear and logistic regression. Then we’ll look at displaying results nicely with <code>sjPlot</code>. Note that this code covers how to conduct a variety of analyses quite quickly; the theory underlying these analyses is beyond the scope of this work.</p>
+<section id="t-test" class="level3">
+<h3 class="anchored" data-anchor-id="t-test">t-test</h3>
+<p>Let’s use a t-test to assess whether humans’ weights are significantly different from other species.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>starwars <span class="ot">&lt;-</span> starwars <span class="sc">|&gt;</span> </span>
+<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">human =</span> <span class="fu">ifelse</span>(species <span class="sc">==</span> <span class="st">"Human"</span>, <span class="st">"human"</span>, <span class="st">"nonhuman"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">human_droid_other =</span> <span class="fu">case_when</span>(species <span class="sc">==</span> <span class="st">"Human"</span> <span class="sc">~</span> <span class="st">"human"</span>,</span>
+<span id="cb82-4"><a href="#cb82-4" aria-hidden="true" tabindex="-1"></a>                                       species <span class="sc">==</span> <span class="st">"Droid"</span> <span class="sc">~</span> <span class="st">"droid"</span>,</span>
+<span id="cb82-5"><a href="#cb82-5" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">.default =</span> <span class="st">"other"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In general, R formulas are “Y ~ X”, which you can read as something like “Y predicted by X”. So here, “mass ‘predicted by’ human status,” which is to say “how does mass differ between the human and non-human species?”</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(mass <span class="sc">~</span> human, <span class="at">data =</span> starwars)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Welch Two Sample t-test
+
+data:  mass by human
+t = -0.721, df = 35.994, p-value = 0.4756
+alternative hypothesis: true difference in means between group human and group nonhuman is not equal to 0
+95 percent confidence interval:
+ -100.09314   47.59091
+sample estimates:
+   mean in group human mean in group nonhuman 
+               81.3100               107.5611 </code></pre>
+</div>
+</div>
+</section>
+<section id="linear-regression" class="level3">
+<h3 class="anchored" data-anchor-id="linear-regression">Linear regression</h3>
+<p>You can conduct a linear regression using the <code>lm()</code> function, also in the base <code>stats</code> package. Let’s look at how height and mass are related.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simple linear regression</span></span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>model1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(mass <span class="sc">~</span> height, <span class="at">data =</span> starwars) </span>
+<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = mass ~ height, data = starwars)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+ -60.95  -29.51  -20.83  -17.65 1260.29 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept) -11.4868   111.3842  -0.103    0.918
+height        0.6240     0.6262   0.997    0.323
+
+Residual standard error: 169.5 on 57 degrees of freedom
+  (28 observations deleted due to missingness)
+Multiple R-squared:  0.01712,   Adjusted R-squared:  -0.0001194 
+F-statistic: 0.9931 on 1 and 57 DF,  p-value: 0.3232</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We can add other predictors for multiple linear regression</span></span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>model2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(mass <span class="sc">~</span> height <span class="sc">+</span> gender, <span class="at">data =</span> starwars) </span>
+<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = mass ~ height + gender, data = starwars)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+ -69.89  -32.79  -27.80  -10.85 1251.16 
+
+Coefficients:
+                Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)     -50.6228   125.1701  -0.404    0.688
+height            0.6139     0.6460   0.950    0.346
+gendermasculine  50.0381    63.5407   0.787    0.434
+
+Residual standard error: 174.6 on 53 degrees of freedom
+  (31 observations deleted due to missingness)
+Multiple R-squared:  0.02875,   Adjusted R-squared:  -0.007901 
+F-statistic: 0.7844 on 2 and 53 DF,  p-value: 0.4616</code></pre>
+</div>
+</div>
+</section>
+<section id="anova" class="level3">
+<h3 class="anchored" data-anchor-id="anova">ANOVA</h3>
+<p>A linear regression with a categorical predictor is an anova, but for completeness we can look here at conducting an ANOVA and doing some post-hoc tests. For example, let’s look at the effect of human/droid/other species status on mass.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="co"># anova</span></span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a>anova <span class="ot">&lt;-</span> <span class="fu">aov</span>(mass <span class="sc">~</span> human_droid_other, <span class="at">data =</span> starwars)</span>
+<span id="cb89-3"><a href="#cb89-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(anova)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                  Df  Sum Sq Mean Sq F value Pr(&gt;F)
+human_droid_other  2   13450    6725   0.228  0.797
+Residuals         56 1652063   29501               
+28 observations deleted due to missingness</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="co"># post-hoc tests (our result isn't significant, but just to illustrate how to do it)</span></span>
+<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a><span class="fu">TukeyHSD</span>(anova)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Tukey multiple comparisons of means
+    95% family-wise confidence level
+
+Fit: aov(formula = mass ~ human_droid_other, data = starwars)
+
+$human_droid_other
+                diff        lwr      upr     p adj
+human-droid 11.56000 -214.93447 238.0545 0.9917114
+other-droid 39.85571 -178.39981 258.1112 0.8991381
+other-human 28.29571  -87.61652 144.2080 0.8272487</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb93"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="co"># also note that a linear regression with a categorical predictor is just an anova, simpler to use one framework</span></span>
+<span id="cb93-2"><a href="#cb93-2" aria-hidden="true" tabindex="-1"></a>anova_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(mass <span class="sc">~</span> human_droid_other, <span class="at">data =</span> starwars)</span>
+<span id="cb93-3"><a href="#cb93-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(anova_lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = mass ~ human_droid_other, data = starwars)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+ -94.61  -42.61  -22.61   -1.31 1248.39 
+
+Coefficients:
+                       Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)               69.75      85.88   0.812    0.420
+human_droid_otherhuman    11.56      94.08   0.123    0.903
+human_droid_otherother    39.86      90.65   0.440    0.662
+
+Residual standard error: 171.8 on 56 degrees of freedom
+  (28 observations deleted due to missingness)
+Multiple R-squared:  0.008075,  Adjusted R-squared:  -0.02735 
+F-statistic: 0.228 on 2 and 56 DF,  p-value: 0.7969</code></pre>
+</div>
+</div>
+<p>We won’t discuss assumptions, but you can check with this package (https://easystats.github.io/performance/articles/check_model.html) or with any number of other options in R.</p>
+<p>You can print your model results in nice tables and visualize your regression coefficients using the <code>sjPlot</code> package. In particular, the function <code>tab_model()</code> prints a table (“tab”) for your model, and <code>plot_model()</code> generates a plot.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb95"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Presenting Results: sjPlot and ggplot2 ----------------------------------</span></span>
+<span id="cb95-2"><a href="#cb95-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb95-3"><a href="#cb95-3" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(c("sjPlot", "ggplot2")) # you have to do this once</span></span>
+<span id="cb95-4"><a href="#cb95-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sjPlot) <span class="co"># have to attach to session every time</span></span>
+<span id="cb95-5"><a href="#cb95-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb95-6"><a href="#cb95-6" aria-hidden="true" tabindex="-1"></a><span class="co"># For our simple linear regression, model</span></span>
+<span id="cb95-7"><a href="#cb95-7" aria-hidden="true" tabindex="-1"></a><span class="fu">tab_model</span>(model1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table data-quarto-postprocess="true" class="table table-sm table-striped small">
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">&nbsp;</td>
+<td colspan="3" data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">mass</td>
+</tr>
+<tr class="even">
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Predictors</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Estimates</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">CI</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">p</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">(Intercept)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-11.49</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-234.53&nbsp;–&nbsp;211.56</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.918</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">height</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.62</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.63&nbsp;–&nbsp;1.88</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.323</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">Observations</td>
+<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">59</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">R<sup>2</sup> / R<sup>2</sup> adjusted</td>
+<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.017 / -0.000</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+<div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_model</span>(model1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="condensed_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb97"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="co"># For our multiple linear regression, model2</span></span>
+<span id="cb97-2"><a href="#cb97-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tab_model</span>(model2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table data-quarto-postprocess="true" class="table table-sm table-striped small">
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">&nbsp;</td>
+<td colspan="3" data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">mass</td>
+</tr>
+<tr class="even">
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Predictors</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Estimates</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">CI</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">p</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">(Intercept)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-50.62</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-301.68&nbsp;–&nbsp;200.44</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.688</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">height</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.61</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.68&nbsp;–&nbsp;1.91</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.346</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">gender [masculine]</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">50.04</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-77.41&nbsp;–&nbsp;177.48</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.434</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">Observations</td>
+<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">56</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">R<sup>2</sup> / R<sup>2</sup> adjusted</td>
+<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.029 / -0.008</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+<div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_model</span>(model2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="condensed_files/figure-html/unnamed-chunk-27-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb99"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="co"># For our simple linear regression, categorical predictor, anova_lm</span></span>
+<span id="cb99-2"><a href="#cb99-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tab_model</span>(anova_lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table data-quarto-postprocess="true" class="table table-sm table-striped small">
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">&nbsp;</td>
+<td colspan="3" data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">mass</td>
+</tr>
+<tr class="even">
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Predictors</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Estimates</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">CI</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">p</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">(Intercept)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">69.75</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-102.29&nbsp;–&nbsp;241.79</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.420</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">human droid other [human]</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">11.56</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-176.90&nbsp;–&nbsp;200.02</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.903</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">human droid other [other]</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">39.86</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-141.75&nbsp;–&nbsp;221.46</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.662</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">Observations</td>
+<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">59</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">R<sup>2</sup> / R<sup>2</sup> adjusted</td>
+<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.008 / -0.027</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+<div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_model</span>(anova_lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="condensed_files/figure-html/unnamed-chunk-27-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb101"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="co"># For our anova</span></span>
+<span id="cb101-2"><a href="#cb101-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tab_model</span>(anova)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table data-quarto-postprocess="true" class="table table-sm table-striped small">
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">&nbsp;</td>
+<td data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">mass</td>
+</tr>
+<tr class="even">
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Predictors</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">p</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">human_droid_other</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.797</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Residuals</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">Observations</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">59</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">R<sup>2</sup> / R<sup>2</sup> adjusted</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.008 / -0.027</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</section>
+</section>
+<section id="if-time-graphing-with-ggplot2" class="level2">
+<h2 class="anchored" data-anchor-id="if-time-graphing-with-ggplot2">If time, graphing with ggplot2</h2>
+<p>ggplot stands for “grammar of graphics” plotting, which is the idea that just like languages have grammars and once you know that you can construct totally new sentences, graphs also have a “grammar,” fundamental elements that you can use to build all kinds of graphs.</p>
+<p>The main ingredients in a graph are (1) the plotting region (this would be like a piece of paper, in the physical world) and (2) the shapes you’re using in your graph (this is your type of graph) In ggplot2, the shapes are generally called “geom”s, and some examples of geoms are histograms, scatterplots, bar graphs, line graphs, boxplots, violin plots.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2) <span class="co"># again, I would usually load all packages at the top of a script</span></span>
+<span id="cb102-2"><a href="#cb102-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb102-3"><a href="#cb102-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(starwars) <span class="sc">+</span> <span class="co"># this says "I'm making a plot", like getting out a piece of paper</span></span>
+<span id="cb102-4"><a href="#cb102-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> height, <span class="at">y =</span> mass)) <span class="co"># this is the "point" geom, for a scatterplot. mapping = aes(...) describes what's on your axes</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 28 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="condensed_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>You can use <code>mapping = aes()</code> in the <code>ggplot()</code> function, in which case it applies to ALL geoms unless overwritten, or in an individual geom (just applies to that geom).</p>
+<p>There’s a lot of graphing, we’re not going to come close to doing everything possible. There are some resources in the tutorial notes document for further learning. The main things we’re going to touch on are a few basic shapes and colours.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Graph of height by gender.</span></span>
+<span id="cb104-2"><a href="#cb104-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(starwars, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> gender, <span class="at">y =</span> height)) <span class="sc">+</span></span>
+<span id="cb104-3"><a href="#cb104-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 6 rows containing missing values or values outside the scale range
+(`geom_col()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="condensed_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Some geoms distinguish between colour (the outside edge) and fill (the inside)</span></span>
+<span id="cb106-2"><a href="#cb106-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb106-3"><a href="#cb106-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(starwars, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> gender, <span class="at">colour =</span> gender)) <span class="sc">+</span></span>
+<span id="cb106-4"><a href="#cb106-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="condensed_files/figure-html/unnamed-chunk-29-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(starwars, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> gender, <span class="at">fill =</span> gender)) <span class="sc">+</span></span>
+<span id="cb107-2"><a href="#cb107-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="condensed_files/figure-html/unnamed-chunk-29-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="co"># some don't distinguish</span></span>
+<span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(starwars) <span class="sc">+</span></span>
+<span id="cb108-3"><a href="#cb108-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> height, <span class="at">y =</span> mass, <span class="at">colour =</span> gender))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 28 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="condensed_files/figure-html/unnamed-chunk-29-4.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>You can also do data manipulation and then pipe into a graph. NOTE THE DIFFERENCE: ggplot uses plus signs (+) to join things together, not pipes (%&gt;% or |&gt;).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a>starwars <span class="sc">|&gt;</span>  </span>
+<span id="cb110-2"><a href="#cb110-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb110-3"><a href="#cb110-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> height, <span class="at">y =</span> mass, <span class="at">colour =</span> gender))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 28 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="condensed_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a>starwars <span class="sc">|&gt;</span></span>
+<span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(gender)) <span class="sc">|&gt;</span></span>
+<span id="cb112-3"><a href="#cb112-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb112-4"><a href="#cb112-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> height, <span class="at">y =</span> mass, <span class="at">colour =</span> gender))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 27 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="condensed_files/figure-html/unnamed-chunk-30-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
