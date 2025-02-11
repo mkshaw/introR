@@ -2,22 +2,16 @@
 title: "Introduction to R"
 author: "Mairead Shaw"
 editor: visual
-output:
-  html: 
-    toc: true
-    toc-depth: 2
-    code-fold: true
-    code-summary: "Show the code"
-    number-sections: true
-    toc-title: "Table of Contents"
-    theme: cosmo
-    smooth-scroll: true
-    self-contained: true  # Ensures the HTML file is standalone (all resources embedded)
+format: pdf
 ---
 
-## (Condensed) Introduction to R
+## Introduction to R
 
-This document is a pared-down version of the `part1.R` and `part2.R` files, intended for a shorter workshop. There is no new content, just a light reorganization to focus less on basic data structures and more on getting up and running using packages and conducting analyses, intended to be delivered as a single 90-minute workshop. It additionally leverages Quarto for presentation, just for fun. :)
+This document is a pared-down version of the `part1.R` and `part2.R` files, intended for a shorter workshop. There is no new content, just a light reorganization to focus less on basic data structures and more on getting up and running using packages and conducting analyses, intended to be delivered as a single 90-minute workshop.
+
+## Additional Resources
+
+These materials serve as a quick introduction. There are many excellent resources for learning R online. Two I will draw your attention to are (1) [R for Data Science](https://r4ds.hadley.nz/) by Hadley Wickham, Mine Çetinkaya-Rundel, and Garrett Grolemund, an excellent resource to learn a great deal of R, and (2) the [R Graph Gallery](https://r-graph-gallery.com/) curated by Yan Holtz, which shows examples of all kinds of graphs and how to code them.
 
 ## Agenda
 
