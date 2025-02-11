@@ -2,7 +2,18 @@
 title: "Introduction to R"
 author: "Mairead Shaw"
 editor: visual
-format: pdf
+output:
+  pdf: default
+  html: 
+    toc: true
+    toc-depth: 2
+    code-fold: true
+    code-summary: "Show the code"
+    number-sections: true
+    toc-title: "Table of Contents"
+    theme: cosmo
+    smooth-scroll: true
+    self-contained: true  # Ensures the HTML file is standalone (all resources embedded)
 ---
 
 ## Introduction to R
